@@ -50,6 +50,9 @@ const UserPage = (props) => {
         columns={["nome", "sobrenome", "cargo", "telefone", "username"]}
         rows={Object.values(users)}
         onAdd={() => props.history.push("/create-user")}
+        handleClick={(user) => {
+          props.history.push(`/update-user/${user.id}`);
+        }}
       />
     </div>
   );

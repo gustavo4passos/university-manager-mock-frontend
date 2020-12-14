@@ -9,7 +9,6 @@ import { useAuth } from "../Auth";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import axios from "axios";
 import * as requestUtils from "../utils/Requests";
 import Alert from "../utils/Alert";
 import { withRouter } from "react-router-dom";

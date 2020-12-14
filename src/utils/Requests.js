@@ -41,11 +41,27 @@ export const authorizedPut = async (
     .catch(error);
 };
 
+export const authorizedPost = async (
+  url,
+  data,
+  response = () => {},
+  error = () => {}
+) => {
+  const user = JSON.parse(localStorage.getItem("auth"));
+  const id = user !== null ? user.id : "";
+
+  axios
+    .post(url, objectToFormData(data), {
+      headers: { authorization: id, "Content-Type": "multipart/form-data" },
+    })
+    .then(response)
+    .catch(error);
+};
+
 export const getCourses = (setCourses) => {
   authorizedGet(
     `http://localhost:5000/curs/all`,
     (response) => {
-      console.log(response);
       setCourses(response.data);
     },
     (error) => console.error(error)
@@ -67,5 +83,48 @@ export const getInstitutions = (setInstitutions) => {
     (error) => {
       console.log("Error", error);
     }
+  );
+};
+
+export const getUser = (id, setUser) => {
+  authorizedGet(
+    `http://localhost:5000/user/${id}`,
+    (response) => {
+      setUser(response.data);
+    },
+    (error) => console.error(error)
+  );
+};
+
+export const updateUser = (userId, user, handleResponse, handleError) => {
+  authorizedPost(
+    `http://localhost:5000/user/${userId}`,
+    user,
+    handleResponse,
+    handleError
+  );
+};
+
+export const getInstitution = (id, setInstitution) => {
+  authorizedGet(
+    `http://localhost:5000/inst/${id}`,
+    (response) => {
+      setInstitution(response.data);
+    },
+    (error) => console.error(error)
+  );
+};
+
+export const updateInstitution = (
+  id,
+  institution,
+  handleResponse,
+  handleError
+) => {
+  authorizedPost(
+    `http://localhost:5000/inst/${id}`,
+    institution,
+    handleResponse,
+    handleError
   );
 };

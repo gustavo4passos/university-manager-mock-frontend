@@ -29,6 +29,12 @@ const Routes = () => {
         <PrivateRoute exact path="/create-user" component={CreateUserPage} />
         <PrivateRoute exact path="/users" component={UsersPage} />
         <PrivateRoute exact path="/courses" component={CoursesPage} />
+        <Route exact path="/update-user/:id">
+          <CreateUserPage />
+        </Route>
+        <Route exact path="/update-institution/:id">
+          <RegisterInstitutionPage />
+        </Route>
         <PrivateRoute
           exact
           path="/create-course"

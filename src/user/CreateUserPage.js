@@ -10,10 +10,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
-import axios from "axios";
 import * as requestUtils from "../utils/Requests";
 import Alert from "../utils/Alert";
-import { withRouter } from "react-router-dom";
+import { withRouter, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   signInButton: {
@@ -32,6 +31,11 @@ const CreateUserPage = (props) => {
     "funcionario",
   ];
 
+  const [formReady, setFormReady] = useState(false);
+  const [buttonText, setButtonText] = useState("Cadastrar");
+  const [title, setTitle] = useState("Criar Usuário");
+  const [update, setUpdate] = useState(false);
+
   const [institutions, setInstitutions] = useState(null);
   const [institution, setInstitution] = useState(-1);
   const [username, setUsername] = useState("");
@@ -47,6 +51,7 @@ const CreateUserPage = (props) => {
   const [alertMessage, setAlertMessage] = useState("");
 
   const auth = useAuth();
+  const params = useParams();
 
   const createUser = () => {
     requestUtils.authorizedPut(
@@ -72,10 +77,52 @@ const CreateUserPage = (props) => {
     );
   };
 
+  const updateUser = () => {
+    requestUtils.updateUser(
+      params.id,
+      {
+        id: params.id,
+        inst_id: institution,
+        username,
+        email,
+        nome: name,
+        sobrenome: surname,
+        telefone: phone,
+        cargo: position,
+      },
+      (response) => {
+        setAlertMessage("Usuario atualizado com sucesso.");
+        setShowAlert(true);
+      },
+      (response) => {
+        setAlertMessage("Nao foi possivel atualizar usuario.");
+        setShowAlert(true);
+      }
+    );
+  };
+
   React.useEffect(() => {
     requestUtils.authorizedGet(`http://localhost:5000/inst/all`, (response) => {
       setInstitutions(response.data);
     });
+
+    if (!params.id) setFormReady(true);
+    else {
+      setUpdate(true);
+      setButtonText("Atualizar");
+      setTitle("Atualizar Usuário");
+      requestUtils.getUser(params.id, (user) => {
+        setInstitution(user.inst_id);
+        setName(user.nome);
+        setUsername(user.username);
+        setPassword(user.password);
+        setSurname(user.sobrenome);
+        setEmail(user.email);
+        setPhone(user.telefone);
+        setPosition(user.cargo);
+        setInstitution(user.inst_id);
+      });
+    }
   }, []);
 
   const classes = useStyles();
@@ -91,13 +138,14 @@ const CreateUserPage = (props) => {
               handleClose={() => setShowAlert(false)}
             />
             <Typography variant="h3" component="h3" gutterBottom>
-              Criar Usuário
+              {title}
             </Typography>
             {errorMessage !== "" ? <p>{errorMessage}</p> : <></>}
             <TextField
               id="username"
               label="Username"
               required
+              value={username}
               onChange={(event) => {
                 setUsername(event.target.value);
               }}
@@ -107,6 +155,7 @@ const CreateUserPage = (props) => {
               label="Senha"
               type="password"
               required
+              value={password}
               onChange={(event) => {
                 setPassword(event.target.value);
               }}
@@ -115,9 +164,9 @@ const CreateUserPage = (props) => {
             <Select
               id="position-select"
               onChange={(event) => {
-                console.log(event.target.value);
                 setPosition(event.target.value);
               }}
+              value={position}
             >
               {positions.map((p) => (
                 <MenuItem id={p} value={p}>
@@ -132,6 +181,7 @@ const CreateUserPage = (props) => {
                 console.log(event.target.value);
                 setInstitution(event.target.value);
               }}
+              value={institution}
             >
               {Object.keys(institutions).map((i) => (
                 <MenuItem id={institutions[i].id} value={institutions[i].id}>
@@ -143,6 +193,7 @@ const CreateUserPage = (props) => {
               id="name"
               label="Nome"
               required
+              value={name}
               onChange={(event) => {
                 setName(event.target.value);
               }}
@@ -151,6 +202,7 @@ const CreateUserPage = (props) => {
               id="surname"
               label="Sobrenome"
               required
+              value={surname}
               onChange={(event) => {
                 setSurname(event.target.value);
               }}
@@ -159,6 +211,7 @@ const CreateUserPage = (props) => {
               id="phone"
               label="Telefone"
               required
+              value={phone}
               onChange={(event) => {
                 setPhone(event.target.value);
               }}
@@ -167,6 +220,7 @@ const CreateUserPage = (props) => {
               id="email"
               label="Email"
               required
+              value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
               }}
@@ -175,9 +229,9 @@ const CreateUserPage = (props) => {
               className={classes.signInButton}
               color="primary"
               variant="contained"
-              onClick={createUser}
+              onClick={update ? updateUser : createUser}
             >
-              Cadastrar
+              {buttonText}
             </Button>
           </form>
         </Paper>

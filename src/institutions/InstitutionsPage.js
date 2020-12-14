@@ -27,6 +27,9 @@ const InstitutionsPage = (props) => {
         columns={["nome", "endereco", "cidade", "estado", "mantenedora"]}
         rows={Object.values(institutions)}
         onAdd={() => props.history.push("/register-institution")}
+        handleClick={(inst) => {
+          props.history.push(`/update-institution/${inst.id}`);
+        }}
       />
     </div>
   );

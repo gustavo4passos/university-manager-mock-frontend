@@ -94,9 +94,9 @@ const GenericTable = (props) => {
             <StyledTableRow
               hover
               key={`${index}`}
-              onClick={() => {
-                console.log("Got here");
-              }}
+              onClick={
+                props.handleClick ? () => props.handleClick(row) : () => {}
+              }
             >
               {props.columns.map((column) => (
                 <StyledTableCell component="th" scope="row" key={column}>
