@@ -19,6 +19,8 @@ import BusinessIcon from "@material-ui/icons/Business";
 import SchoolIcon from "@material-ui/icons/School";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import { withRouter, useLocation } from "react-router-dom";
+import { useAuth } from "../Auth";
+import * as permissions from "../utils/Permissions";
 
 const drawerWidth = 240;
 
@@ -109,6 +111,8 @@ const SideMenu = (props) => {
     }
   }, [location]);
 
+  const auth = useAuth();
+
   return (
     <>
       {!hidden && (
@@ -130,7 +134,7 @@ const SideMenu = (props) => {
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6" noWrap>
-                Home
+                Institucional
               </Typography>
             </Toolbar>
           </AppBar>
@@ -154,26 +158,30 @@ const SideMenu = (props) => {
             </div>
             <Divider />
             <List>
-              <ListItem
-                button
-                key="users"
-                onClick={() => props.history.push("/users")}
-              >
-                <ListItemIcon>
-                  <AccountCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Usuários" />
-              </ListItem>
-              <ListItem
-                button
-                key="institutions"
-                onClick={() => props.history.push("/institutions")}
-              >
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText primary="Instituições" />
-              </ListItem>
+              {auth.user && permissions.canManageUsers(auth.user) && (
+                <ListItem
+                  button
+                  key="users"
+                  onClick={() => props.history.push("/users")}
+                >
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Usuários" />
+                </ListItem>
+              )}
+              {permissions.canQueryInstitutions(auth.user) && (
+                <ListItem
+                  button
+                  key="institutions"
+                  onClick={() => props.history.push("/institutions")}
+                >
+                  <ListItemIcon>
+                    <BusinessIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Instituições" />
+                </ListItem>
+              )}
             </List>
             <ListItem
               button

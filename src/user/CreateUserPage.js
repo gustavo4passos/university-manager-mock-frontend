@@ -150,16 +150,18 @@ const CreateUserPage = (props) => {
                 setUsername(event.target.value);
               }}
             />
-            <TextField
-              id="password"
-              label="Senha"
-              type="password"
-              required
-              value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-            />
+            {!update && (
+              <TextField
+                id="password"
+                label="Senha"
+                type="password"
+                required
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+              />
+            )}
             <InputLabel>Cargo</InputLabel>
             <Select
               id="position-select"

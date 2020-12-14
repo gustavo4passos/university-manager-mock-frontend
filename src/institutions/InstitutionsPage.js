@@ -2,7 +2,9 @@ import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import GenericTable from "../utils/GenericTable";
 import { withRouter } from "react-router-dom";
+import { useAuth } from "../Auth";
 import * as requests from "../utils/Requests";
+import * as permissions from "../utils/Permissions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -17,6 +19,17 @@ const InstitutionsPage = (props) => {
     requests.getInstitutions(setInstitutions);
   }, []);
 
+  const auth = useAuth();
+  const handleUpdate = (inst) => {
+    if (auth.user && permissions.canUpdateInstitution(auth.user)) {
+      props.history.push(`/update-institution/${inst.id}`);
+    } else if (auth.user && permissions.canUpdateOwnInstitution(auth.user)) {
+      if (auth.user.inst_id === inst.id) {
+        props.history.push(`/update-institution/${inst.id}`);
+      }
+    }
+  };
+
   const classes = useStyles();
 
   return (
@@ -26,10 +39,9 @@ const InstitutionsPage = (props) => {
         titles={["Nome", "Endereço", "Cidade", "Estado", "Mantenedora"]}
         columns={["nome", "endereco", "cidade", "estado", "mantenedora"]}
         rows={Object.values(institutions)}
+        showAdd={permissions.canCreateInstitution(auth.user)}
         onAdd={() => props.history.push("/register-institution")}
-        handleClick={(inst) => {
-          props.history.push(`/update-institution/${inst.id}`);
-        }}
+        handleClick={handleUpdate}
       />
     </div>
   );

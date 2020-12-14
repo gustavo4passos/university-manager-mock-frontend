@@ -72,14 +72,16 @@ const GenericTable = (props) => {
         >
           {props.title}
         </Typography>
-        <Button
-          variant="outlined"
-          color="primary"
-          className={classes.addButton}
-          onClick={props.onAdd ? props.onAdd : () => {}}
-        >
-          Adicionar
-        </Button>
+        {(props.showAdd === undefined || props.showAdd === true) && (
+          <Button
+            variant="outlined"
+            color="primary"
+            className={classes.addButton}
+            onClick={props.onAdd ? props.onAdd : () => {}}
+          >
+            Adicionar
+          </Button>
+        )}
       </Toolbar>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>

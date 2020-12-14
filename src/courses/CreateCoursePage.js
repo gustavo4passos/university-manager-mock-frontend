@@ -5,17 +5,21 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
-import { useAuth } from "../Auth";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import * as requestUtils from "../utils/Requests";
+import Paper from "@material-ui/core/Paper";
 import Alert from "../utils/Alert";
 import { withRouter } from "react-router-dom";
+import { useAuth } from "../Auth";
 
 const useStyles = makeStyles((theme) => ({
   signInButton: {
     margin: theme.spacing(2),
+  },
+  container: {
+    padding: 60,
   },
 }));
 
@@ -26,6 +30,10 @@ const CreateCoursePage = (props) => {
     "coordenador",
     "funcionario",
   ];
+
+  const user = useAuth().user;
+  const institutionId = user ? user.inst_id : 1;
+
   const [course, setCourse] = useState({
     nome: "",
     ato_auto: "",
@@ -33,7 +41,7 @@ const CreateCoursePage = (props) => {
     ato_reno: "",
     codigo_emec: "",
     obs: "",
-    inst_id: -1,
+    inst_id: institutionId,
     renov: "",
   });
 
@@ -42,8 +50,6 @@ const CreateCoursePage = (props) => {
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-
-  const auth = useAuth();
 
   const createCourse = () => {
     requestUtils.authorizedPut(
@@ -70,104 +76,107 @@ const CreateCoursePage = (props) => {
   return (
     <>
       {institutions !== null && (
-        <form className="LoginContainer" noValidate autoComplete="off">
-          <Alert
-            severity="success"
-            message={alertMessage}
-            open={showAlert}
-            handleClose={() => setShowAlert(false)}
-          />
-          <Typography variant="h3" component="h3" gutterBottom>
-            Criar Curso
-          </Typography>
-          <TextField
-            id="nome"
-            label="Nome do Curso"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, nome: event.target.value });
-            }}
-          />
-          <TextField
-            id="grau"
-            label="Grau"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, grau: event.target.value });
-            }}
-          />
-          <InputLabel>Instituição</InputLabel>
-          <Select
-            id="institution-select"
-            onChange={(event) => {
-              console.log(event.target.value);
-              setCourse({ ...course, inst_id: event.target.value });
-            }}
-          >
-            {Object.keys(institutions).map((i) => (
-              <MenuItem id={institutions[i].id} value={institutions[i].id}>
-                {institutions[i].nome}
+        <Paper className={classes.container}>
+          <form className="LoginContainer" noValidate autoComplete="off">
+            <Alert
+              severity="success"
+              message={alertMessage}
+              open={showAlert}
+              handleClose={() => setShowAlert(false)}
+            />
+            <Typography variant="h3" component="h3" gutterBottom>
+              Criar Curso
+            </Typography>
+            <TextField
+              id="nome"
+              label="Nome do Curso"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, nome: event.target.value });
+              }}
+            />
+            <TextField
+              id="grau"
+              label="Grau"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, grau: event.target.value });
+              }}
+            />
+            <InputLabel>Instituição</InputLabel>
+            <Select
+              id="institution-select"
+              onChange={(event) => {
+                setCourse({ ...course, inst_id: event.target.value });
+              }}
+              value={institutionId}
+            >
+              <MenuItem
+                id={institutions[institutionId].id}
+                value={institutions[institutionId].id}
+              >
+                {institutions[institutionId].nome}
               </MenuItem>
-            ))}
-          </Select>
+            </Select>
 
-          <TextField
-            id="codigo_emec"
-            label="Código - MEC"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, codigo_emec: event.target.value });
-            }}
-          />
-          <TextField
-            id="obs"
-            label="Observação"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, obs: event.target.value });
-            }}
-          />
-          <TextField
-            id="ato_reno"
-            label="Ato de Renovação"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, ato_reno: event.target.value });
-            }}
-          />
-          <TextField
-            id="renov"
-            label="Renovação"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, renov: event.target.value });
-            }}
-          />
-          <TextField
-            id="ato_reco"
-            label="Ato de Reconhecimento"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, ato_reco: event.target.value });
-            }}
-          />
-          <TextField
-            id="ato_reco"
-            label="Ato de Autorização"
-            required
-            onChange={(event) => {
-              setCourse({ ...course, auto_auto: event.target.value });
-            }}
-          />
-          <Button
-            className={classes.signInButton}
-            color="primary"
-            variant="contained"
-            onClick={createCourse}
-          >
-            Cadastrar
-          </Button>
-        </form>
+            <TextField
+              id="codigo_emec"
+              label="Código - MEC"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, codigo_emec: event.target.value });
+              }}
+            />
+            <TextField
+              id="obs"
+              label="Observação"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, obs: event.target.value });
+              }}
+            />
+            <TextField
+              id="ato_reno"
+              label="Ato de Renovação"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, ato_reno: event.target.value });
+              }}
+            />
+            <TextField
+              id="renov"
+              label="Renovação"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, renov: event.target.value });
+              }}
+            />
+            <TextField
+              id="ato_reco"
+              label="Ato de Reconhecimento"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, ato_reco: event.target.value });
+              }}
+            />
+            <TextField
+              id="ato_reco"
+              label="Ato de Autorização"
+              required
+              onChange={(event) => {
+                setCourse({ ...course, auto_auto: event.target.value });
+              }}
+            />
+            <Button
+              className={classes.signInButton}
+              color="primary"
+              variant="contained"
+              onClick={createCourse}
+            >
+              Cadastrar
+            </Button>
+          </form>
+        </Paper>
       )}
     </>
   );

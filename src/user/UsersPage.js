@@ -38,6 +38,9 @@ const UserPage = (props) => {
   const classes = useStyles();
   const [users, setUsers] = React.useState({});
 
+  const [institutions, setInstitutions] = React.useState(null);
+  const [mappedUsers, setMappedUsers] = React.useState(null);
+
   React.useEffect(() => {
     requests.getUsers(setUsers);
   }, []);
