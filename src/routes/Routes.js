@@ -10,6 +10,8 @@ import CreateUserPage from "../user/CreateUserPage";
 import SideMenu from "../home/SideMenu";
 import UsersPage from "../user/UsersPage";
 import LogoutPage from "../user/LogoutPage";
+import InstitutionPage from "../institutions/Institutionpage";
+import AccountPage from "../user/AccountPage";
 import { useAuth } from "../Auth";
 import * as permissions from "../utils/Permissions";
 
@@ -29,6 +31,7 @@ const Routes = () => {
     <Router>
       <SideMenu />
       <Switch>
+        <PrivateRoute exact path="/me" component={AccountPage} />
         <PrivateRoute exact path="/home" component={HomePage} />
         <PrivateRoute
           exact
@@ -57,6 +60,9 @@ const Routes = () => {
         <Route exact path="/logout" component={LogoutPage} />
         <Route exact path="/login">
           <SignInPage />
+        </Route>
+        <Route exact path="/institution/:id">
+          <InstitutionPage />
         </Route>
         <PrivateRoute
           path="/register-institution"

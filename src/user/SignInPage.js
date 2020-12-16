@@ -1,10 +1,11 @@
 import "./SignInPage.css";
+import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../Auth";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
@@ -23,6 +24,11 @@ const SignInPage = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [disableLogin, setDisableLogin] = useState(false);
+
+  React.useEffect(() => {
+    setDisableLogin(email == "" && password == "");
+  }, [email, password]);
 
   const auth = useAuth();
 
@@ -51,15 +57,15 @@ const SignInPage = (props) => {
   if (auth.user) return <Redirect to="/home" />;
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.container} elevation={3}>
       <form className="LoginContainer" noValidate autoComplete="off">
-        <Typography variant="h3" component="h3" gutterBottom>
-          Login
+        <Typography variant="h4" component="h4" gutterBottom color="primary">
+          LOGIN
         </Typography>
         {errorMessage !== "" ? <p>{errorMessage}</p> : <></>}
         <TextField
           id="email"
-          label="email"
+          label="Username"
           required
           type="email"
           onChange={(event) => {
@@ -68,7 +74,7 @@ const SignInPage = (props) => {
         />
         <TextField
           id="password"
-          label="password"
+          label="Senha"
           type="password"
           required
           onChange={(event) => {
@@ -76,9 +82,10 @@ const SignInPage = (props) => {
           }}
         />
         <Button
+          disabled={disableLogin}
           className={classes.signInButton}
           color="primary"
-          variant="contained"
+          variant={"contained"}
           onClick={login}
         >
           Entrar

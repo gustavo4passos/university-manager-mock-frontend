@@ -30,6 +30,18 @@ const InstitutionsPage = (props) => {
     }
   };
 
+  const allowUpdate = (inst) => {
+    if (auth.user && permissions.canUpdateInstitution(auth.user)) return true;
+    if (
+      auth.user &&
+      permissions.canUpdateOwnInstitution(auth.user) &&
+      auth.user.inst_id === inst.id
+    )
+      return true;
+
+    return false;
+  };
+
   const classes = useStyles();
 
   return (
@@ -41,7 +53,9 @@ const InstitutionsPage = (props) => {
         rows={Object.values(institutions)}
         showAdd={permissions.canCreateInstitution(auth.user)}
         onAdd={() => props.history.push("/register-institution")}
-        handleClick={handleUpdate}
+        handleEdit={handleUpdate}
+        rowDisableEdit={(inst) => !allowUpdate(inst)}
+        onRowClick={{ nome: (inst) => `/institution/${inst.id}` }}
       />
     </div>
   );

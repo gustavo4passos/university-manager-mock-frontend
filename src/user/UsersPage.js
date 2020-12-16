@@ -4,6 +4,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import GenericTable from "../utils/GenericTable";
 import { withRouter } from "react-router-dom";
+import { useAuth } from "../Auth";
+import _ from "lodash";
 import * as requests from "../utils/Requests";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -35,6 +37,7 @@ const useStyles = makeStyles({
 });
 
 const UserPage = (props) => {
+  const auth = useAuth();
   const classes = useStyles();
   const [users, setUsers] = React.useState({});
 
@@ -49,13 +52,22 @@ const UserPage = (props) => {
     <div className={classes.container}>
       <GenericTable
         title="Usuários"
-        titles={["Nome", "Sobrenome", "Cargo", "Telefone", "Username"]}
-        columns={["nome", "sobrenome", "cargo", "telefone", "username"]}
+        titles={["Nome", "Sobrenome", "Cargo", "Telefone", "Username", "CPF"]}
+        columns={["nome", "sobrenome", "cargo", "telefone", "username", "cpf"]}
         rows={Object.values(users)}
         onAdd={() => props.history.push("/create-user")}
         handleClick={(user) => {
           props.history.push(`/update-user/${user.id}`);
         }}
+        handleEdit={(user) => {
+          props.history.push(`/update-user/${user.id}`);
+        }}
+        handleRemove={(user) => {
+          requests.deleteUser(user.id, () => {
+            setUsers(_.omit(users, user.id));
+          });
+        }}
+        rowDisableRemoval={(user) => user.id === auth.user.id}
       />
     </div>
   );

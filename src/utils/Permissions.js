@@ -7,7 +7,6 @@ export const canQueryInstitutions = (user) => {
     "funcionário",
     "debug",
   ];
-  console.log("upd", user);
   return user && cargos.includes(user.cargo);
 };
 export const canUpdateInstitution = (user) => {
@@ -28,4 +27,14 @@ export const canCreateInstitution = (user) => {
 export const canUpdateOwnInstitution = (user) => {
   const cargos = ["superintendente", "diretor", "debug"];
   return user && cargos.includes(user.cargo);
+};
+
+export const canAddCourseToInstitution = (user, institution) => {
+  const cargos = ["superintendente", "diretor", "funcionario"];
+
+  if (user && cargos.includes(user.cargo)) {
+    if (user.inst_id === institution.id) return true;
+  }
+
+  return false;
 };

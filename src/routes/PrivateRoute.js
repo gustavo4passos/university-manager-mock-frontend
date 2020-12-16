@@ -7,6 +7,7 @@ const PrivateRoute = ({ component: Component, allowed, ...rest }) => {
   const isAuthenticated = auth.user !== null;
   const accessAllowed = allowed !== undefined ? allowed : true;
 
+  console.log("ist aht", isAuthenticated && accessAllowed);
   return (
     <Route
       {...rest}
@@ -14,7 +15,7 @@ const PrivateRoute = ({ component: Component, allowed, ...rest }) => {
         isAuthenticated && accessAllowed ? (
           <Component {...props} />
         ) : (
-          <Redirect to="/" />
+          <Redirect to="/login" />
         )
       }
     />

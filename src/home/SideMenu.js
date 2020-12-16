@@ -12,12 +12,14 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
+import Button from "@material-ui/core/Button";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import BusinessIcon from "@material-ui/icons/Business";
 import SchoolIcon from "@material-ui/icons/School";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
+import Link from "@material-ui/core/Link";
 import { withRouter, useLocation } from "react-router-dom";
 import { useAuth } from "../Auth";
 import * as permissions from "../utils/Permissions";
@@ -79,6 +81,16 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
+  userIcon: {
+    marginRight: 10,
+  },
+  userInfo: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    right: 20,
+  },
 }));
 
 const SideMenu = (props) => {
@@ -133,9 +145,36 @@ const SideMenu = (props) => {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap>
-                Institucional
-              </Typography>
+              <Link
+                color="inherit"
+                href="/home"
+                onClick={() => props.history.push("/home")}
+              >
+                <Typography variant="h6" noWrap>
+                  Institucional
+                </Typography>
+              </Link>
+              <div className={classes.userInfo}>
+                <AccountCircleIcon className={classes.userIcon} />
+                <Typography variant="h6" noWrap>
+                  <Link
+                    color="inherit"
+                    href="#"
+                    onClick={() => props.history.push("/me")}
+                  >
+                    {auth.user
+                      ? `${auth.user.nome} ${auth.user.sobrenome}, ${auth.user.cargo}    `
+                      : ""}
+                  </Link>
+                </Typography>
+                <Button className={classes.logoutButton} color="inherit">
+                  <LogoutIcon
+                    onClick={() => {
+                      props.history.push("/logout");
+                    }}
+                  />
+                </Button>
+              </div>
             </Toolbar>
           </AppBar>
           <Drawer

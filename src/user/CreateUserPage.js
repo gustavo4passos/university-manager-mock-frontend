@@ -45,6 +45,7 @@ const CreateUserPage = (props) => {
   const [surname, setSurname] = useState("");
   const [phone, setPhone] = useState("");
   const [position, setPosition] = useState(positions[0]);
+  const [cpf, setCpf] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const [showAlert, setShowAlert] = useState(false);
@@ -65,6 +66,7 @@ const CreateUserPage = (props) => {
         sobrenome: surname,
         telefone: phone,
         cargo: position,
+        cpf,
       },
       (response) => {
         setAlertMessage("Usuario criado com sucesso.");
@@ -89,6 +91,7 @@ const CreateUserPage = (props) => {
         sobrenome: surname,
         telefone: phone,
         cargo: position,
+        cpf,
       },
       (response) => {
         setAlertMessage("Usuario atualizado com sucesso.");
@@ -121,6 +124,7 @@ const CreateUserPage = (props) => {
         setPhone(user.telefone);
         setPosition(user.cargo);
         setInstitution(user.inst_id);
+        setCpf(user.cpf);
       });
     }
   }, []);
@@ -207,6 +211,15 @@ const CreateUserPage = (props) => {
               value={surname}
               onChange={(event) => {
                 setSurname(event.target.value);
+              }}
+            />
+            <TextField
+              id="cpf"
+              label="CPF"
+              required
+              value={cpf}
+              onChange={(event) => {
+                setCpf(event.target.value);
               }}
             />
             <TextField
