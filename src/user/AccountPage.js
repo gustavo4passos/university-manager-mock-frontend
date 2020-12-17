@@ -37,6 +37,8 @@ const AccountPage = (props) => {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
+  console.log("alright babe", auth.user);
+
   React.useEffect(() => {
     requests.getInstitutions(setInstitutions);
   }, []);
@@ -68,7 +70,7 @@ const AccountPage = (props) => {
               {`${auth.user.cargo}`}
             </Typography>
             <Typography variant="body2" component="p">
-              {institutions && (
+              {institutions && institutions[auth.user.inst_id] && (
                 <Link
                   href="#"
                   onClick={() =>

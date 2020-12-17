@@ -11,7 +11,7 @@ import Select from "@material-ui/core/Select";
 import * as requestUtils from "../utils/Requests";
 import Paper from "@material-ui/core/Paper";
 import Alert from "../utils/Alert";
-import { withRouter } from "react-router-dom";
+import { withRouter, useParams } from "react-router-dom";
 import { useAuth } from "../Auth";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +32,7 @@ const CreateCoursePage = (props) => {
   ];
 
   const user = useAuth().user;
+  const params = useParams();
   const institutionId = user ? user.inst_id : 1;
 
   const [course, setCourse] = useState({
@@ -44,6 +45,11 @@ const CreateCoursePage = (props) => {
     inst_id: institutionId,
     renov: "",
   });
+
+  const [formReady, setFormReady] = useState(false);
+  const [buttonText, setButtonText] = useState("Cadastrar");
+  const [title, setTitle] = useState("Criar Curso");
+  const [update, setUpdate] = useState(false);
 
   const [institutions, setInstitutions] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -70,7 +76,35 @@ const CreateCoursePage = (props) => {
     requestUtils.authorizedGet(`http://localhost:5000/inst/all`, (response) => {
       setInstitutions(response.data);
     });
+
+    if (!params.id) setFormReady(true);
+    else {
+      setUpdate(true);
+      setButtonText("Atualizar");
+      setTitle("Atualizar Curso");
+      requestUtils.getCourse(params.id, (course) => {
+        setCourse(course);
+      });
+    }
   }, []);
+
+  const updateCourse = () => {
+    requestUtils.updateCourse(
+      params.id,
+      {
+        ...course,
+        id: params.id,
+      },
+      (response) => {
+        setAlertMessage("Curso atualizado com sucesso.");
+        setShowAlert(true);
+      },
+      (response) => {
+        setAlertMessage("Nao foi possivel atualizar curso.");
+        setShowAlert(true);
+      }
+    );
+  };
 
   const classes = useStyles();
   return (
@@ -85,11 +119,12 @@ const CreateCoursePage = (props) => {
               handleClose={() => setShowAlert(false)}
             />
             <Typography variant="h3" component="h3" gutterBottom>
-              Criar Curso
+              {title}
             </Typography>
             <TextField
               id="nome"
               label="Nome do Curso"
+              value={course.nome}
               required
               onChange={(event) => {
                 setCourse({ ...course, nome: event.target.value });
@@ -99,6 +134,7 @@ const CreateCoursePage = (props) => {
               id="grau"
               label="Grau"
               required
+              value={course.grau}
               onChange={(event) => {
                 setCourse({ ...course, grau: event.target.value });
               }}
@@ -106,6 +142,7 @@ const CreateCoursePage = (props) => {
             <InputLabel>Instituição</InputLabel>
             <Select
               id="institution-select"
+              value={course.inst_id}
               onChange={(event) => {
                 setCourse({ ...course, inst_id: event.target.value });
               }}
@@ -122,6 +159,7 @@ const CreateCoursePage = (props) => {
             <TextField
               id="codigo_emec"
               label="Código - MEC"
+              value={course.codigo_emec}
               required
               onChange={(event) => {
                 setCourse({ ...course, codigo_emec: event.target.value });
@@ -131,6 +169,7 @@ const CreateCoursePage = (props) => {
               id="obs"
               label="Observação"
               required
+              value={course.obs}
               onChange={(event) => {
                 setCourse({ ...course, obs: event.target.value });
               }}
@@ -139,6 +178,7 @@ const CreateCoursePage = (props) => {
               id="ato_reno"
               label="Ato de Renovação"
               required
+              value={course.ato_reno}
               onChange={(event) => {
                 setCourse({ ...course, ato_reno: event.target.value });
               }}
@@ -146,6 +186,7 @@ const CreateCoursePage = (props) => {
             <TextField
               id="renov"
               label="Renovação"
+              value={course.renov}
               required
               onChange={(event) => {
                 setCourse({ ...course, renov: event.target.value });
@@ -154,6 +195,7 @@ const CreateCoursePage = (props) => {
             <TextField
               id="ato_reco"
               label="Ato de Reconhecimento"
+              value={course.ato_reco}
               required
               onChange={(event) => {
                 setCourse({ ...course, ato_reco: event.target.value });
@@ -163,17 +205,18 @@ const CreateCoursePage = (props) => {
               id="ato_reco"
               label="Ato de Autorização"
               required
+              value={course.ato_auto}
               onChange={(event) => {
-                setCourse({ ...course, auto_auto: event.target.value });
+                setCourse({ ...course, auto_ato: event.target.value });
               }}
             />
             <Button
               className={classes.signInButton}
               color="primary"
               variant="contained"
-              onClick={createCourse}
+              onClick={update ? updateCourse : createCourse}
             >
-              Cadastrar
+              {buttonText}
             </Button>
           </form>
         </Paper>

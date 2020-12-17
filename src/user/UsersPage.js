@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 import { useAuth } from "../Auth";
 import _ from "lodash";
 import * as requests from "../utils/Requests";
+import * as permissions from "../utils/Permissions";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -67,7 +68,10 @@ const UserPage = (props) => {
             setUsers(_.omit(users, user.id));
           });
         }}
-        rowDisableRemoval={(user) => user.id === auth.user.id}
+        rowDisableRemoval={(user) =>
+          !permissions.canRemoveUser(auth.user, user)
+        }
+        rowDisableEdit={(user) => !permissions.canEditUser(auth.user, user)}
       />
     </div>
   );

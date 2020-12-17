@@ -31,8 +31,7 @@ const Routes = () => {
     <Router>
       <SideMenu />
       <Switch>
-        <PrivateRoute exact path="/me" component={AccountPage} />
-        <PrivateRoute exact path="/home" component={HomePage} />
+        <PrivateRoute exact path="/home" component={AccountPage} />
         <PrivateRoute
           exact
           path="/create-user"
@@ -51,6 +50,9 @@ const Routes = () => {
         </Route>
         <Route exact path="/update-institution/:id">
           <RegisterInstitutionPage />
+        </Route>
+        <Route exact path="/update-course/:id">
+          <CreateCoursePage />
         </Route>
         <PrivateRoute
           exact

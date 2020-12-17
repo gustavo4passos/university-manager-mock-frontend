@@ -67,7 +67,6 @@ export const authorizedDelete = async (
   const user = JSON.parse(localStorage.getItem("auth"));
   const id = user !== null ? user.id : "";
 
-  console.log("au", id);
   axios
     .delete(url, {
       headers: { authorization: id, "Content-Type": "multipart/form-data" },
@@ -82,6 +81,16 @@ export const getCourses = (setCourses) => {
     `http://localhost:5000/curs/all`,
     (response) => {
       setCourses(response.data);
+    },
+    (error) => console.error(error)
+  );
+};
+
+export const getCourse = (id, setCourse) => {
+  authorizedGet(
+    `http://localhost:5000/curs/${id}`,
+    (response) => {
+      setCourse(response.data);
     },
     (error) => console.error(error)
   );
@@ -148,9 +157,27 @@ export const updateInstitution = (
   );
 };
 
+export const updateCourse = (id, course, handleResponse, handleError) => {
+  authorizedPost(
+    `http://localhost:5000/curs/${id}`,
+    course,
+    handleResponse,
+    handleError
+  );
+};
+
 export const deleteUser = (id, handleResponse, handleError) => {
   authorizedDelete(
     `http://localhost:5000/user/${id}`,
+    {},
+    (response) => handleResponse(response.data),
+    handleError
+  );
+};
+
+export const deleteCourse = (id, handleResponse, handleError) => {
+  authorizedDelete(
+    `http://localhost:5000/curs/${id}`,
     {},
     (response) => handleResponse(response.data),
     handleError

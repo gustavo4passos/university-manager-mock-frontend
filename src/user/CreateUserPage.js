@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateUserPage = (props) => {
   const positions = [
-    "dirigente",
+    "dirigente institucional",
     "superintendente",
     "coordenador",
     "funcionario",

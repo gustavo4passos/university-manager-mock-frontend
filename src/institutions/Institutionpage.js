@@ -54,8 +54,8 @@ const InstitutionPage = (props) => {
       {institutionCourses !== null && (
         <GenericTable
           title="Cursos Disponíveis"
-          titles={["Nome"]}
-          columns={["nome"]}
+          titles={["Nome", "Código"]}
+          columns={["nome", "codigo_emec"]}
           rows={Object.values(institutionCourses)}
           showAdd={
             institution &&

@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import { useAuth } from "../Auth";
 import * as requests from "../utils/Requests";
 import * as permissions from "../utils/Permissions";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,12 +15,26 @@ const useStyles = makeStyles((theme) => ({
 
 const InstitutionsPage = (props) => {
   const [institutions, setInstitutions] = React.useState({});
+  const auth = useAuth();
 
   React.useEffect(() => {
     requests.getInstitutions(setInstitutions);
   }, []);
 
-  const auth = useAuth();
+  React.useEffect(() => {
+    if (!permissions.canViewNotVisibleInstitutions(auth.user)) {
+      const filteredInstitutions = _.pickBy(institutions, (value, key) => {
+        return value.visivel === 1;
+      });
+      if (
+        Object.keys(filteredInstitutions).length !==
+        Object.keys(institutions).length
+      ) {
+        setInstitutions(filteredInstitutions);
+      }
+    }
+  }, [institutions]);
+
   const handleUpdate = (inst) => {
     if (auth.user && permissions.canUpdateInstitution(auth.user)) {
       props.history.push(`/update-institution/${inst.id}`);

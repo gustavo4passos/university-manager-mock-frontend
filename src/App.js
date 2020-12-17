@@ -2,6 +2,7 @@ import "./App.css";
 import React from "react";
 import Routes from "./routes/Routes";
 import { AuthContext } from "./Auth";
+import * as requests from "./utils/Requests";
 import { useState } from "react";
 require("dotenv").config();
 
@@ -18,7 +19,11 @@ function App() {
   React.useEffect(() => {
     // Checks if user is logged in
     const auth = localStorage.getItem("auth");
-    if (auth !== null) setUser(JSON.parse(auth));
+    if (auth !== null) {
+      const user = JSON.parse(auth);
+      setUser(user);
+      requests.getUser(user.id, setUser);
+    }
   }, []);
 
   return (

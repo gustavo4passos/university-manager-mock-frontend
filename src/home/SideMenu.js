@@ -18,6 +18,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import BusinessIcon from "@material-ui/icons/Business";
 import SchoolIcon from "@material-ui/icons/School";
+import PersonIcon from "@material-ui/icons/Person";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import Link from "@material-ui/core/Link";
 import { withRouter, useLocation } from "react-router-dom";
@@ -160,7 +161,7 @@ const SideMenu = (props) => {
                   <Link
                     color="inherit"
                     href="#"
-                    onClick={() => props.history.push("/me")}
+                    onClick={() => props.history.push("/home")}
                   >
                     {auth.user
                       ? `${auth.user.nome} ${auth.user.sobrenome}, ${auth.user.cargo}    `
@@ -236,13 +237,23 @@ const SideMenu = (props) => {
             <List>
               <ListItem
                 button
+                key="account"
+                onClick={() => props.history.push("/home")}
+              >
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary="Minha Conta" />
+              </ListItem>
+              <ListItem
+                button
                 key="logout"
                 onClick={() => props.history.push("/logout")}
               >
                 <ListItemIcon>
                   <LogoutIcon />
                 </ListItemIcon>
-                <ListItemText primary="Logout" />
+                <ListItemText primary="Sair" />
               </ListItem>
             </List>
           </Drawer>
